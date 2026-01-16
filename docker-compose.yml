@@ -1,0 +1,11 @@
+services:
+  opencode:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: opencode_dev
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    working_dir: /app
