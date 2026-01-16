@@ -1,14 +1,8 @@
-import { Global } from "../global"
 import { Log } from "../util/log"
-import path from "path"
 import z from "zod"
-import { data } from "./models-macro" with { type: "macro" }
-import { Installation } from "../installation"
-import { Flag } from "../flag/flag"
 
 export namespace ModelsDev {
   const log = Log.create({ service: "models.dev" })
-  const filepath = path.join(Global.Path.cache, "models.json")
 
   export const Model = z.object({
     id: z.string(),
@@ -77,32 +71,11 @@ export namespace ModelsDev {
   export type Provider = z.infer<typeof Provider>
 
   export async function get() {
-    refresh()
-    const file = Bun.file(filepath)
-    const result = await file.json().catch(() => {})
-    if (result) return result as Record<string, Provider>
-    const json = await data()
-    return JSON.parse(json) as Record<string, Provider>
+    return {} as Record<string, Provider>
   }
 
   export async function refresh() {
-    if (Flag.OPENCODE_DISABLE_MODELS_FETCH) return
-    const file = Bun.file(filepath)
-    log.info("refreshing", {
-      file,
-    })
-    const result = await fetch("https://models.dev/api.json", {
-      headers: {
-        "User-Agent": Installation.USER_AGENT,
-      },
-      signal: AbortSignal.timeout(10 * 1000),
-    }).catch((e) => {
-      log.error("Failed to fetch models.dev", {
-        error: e,
-      })
-    })
-    if (result && result.ok) await Bun.write(file, await result.text())
+    // désactivé, ne récupère pas de modèl exterieur
+    return
   }
 }
-
-setInterval(() => ModelsDev.refresh(), 60 * 1000 * 60).unref()

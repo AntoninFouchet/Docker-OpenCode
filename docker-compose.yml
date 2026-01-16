@@ -9,3 +9,36 @@ services:
     ports:
       - "3000:3000"
     working_dir: /app
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - | # force l'utilisation de Ollama
+        OPENCODE_CONFIG_CONTENT={
+          "enabled_providers": ["ollama"],
+          "model": "ollama/llama3",
+          "provider": {
+            "ollama": {
+              "npm": "@ai-sdk/openai-compatible",
+              "name": "Ollama",
+              "options": {
+                "baseURL": "http://ollama:11434/v1"
+              },
+              "models": {
+                "llama3": {
+                  "name": "Llama 3"
+                }
+              }
+            }
+          }
+        }
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama_dev
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+volumes:
+  ollama_data:
+
