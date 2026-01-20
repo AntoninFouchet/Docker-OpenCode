@@ -19,12 +19,12 @@ services:
       - ${LOCAL_PROJECTS_PATH}:/app/workspace
     ports:
       - "3000:3000"
-    working_dir: /app/workspace
+    working_dir: /app
     environment:
-      # Adresse pour la communication interne
-      - OLLAMA_BASE_URL=http://ollama:11434
       # Dossier de travail est workspace par défaut
       - WORKSPACE_DIR=/app/workspace
+      # Adresse pour la communication interne
+      - OLLAMA_BASE_URL=http://ollama:11434
 
       # Forcer l'utilisation de Ollama, config Json
       - |

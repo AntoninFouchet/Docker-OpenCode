@@ -3,7 +3,7 @@ Voici les commandes exactes à utiliser dans votre terminal une fois que le cont
 ### Récuperer l'image
 Pour récuperer l'image du docker du projet OpenCode, tapez la commande suivante :
 ```bash
-docker load -i opencode.tar
+docker load -i opencode-docker.tar
 ```
 
 ### Créer une image
