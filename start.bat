@@ -1,15 +1,12 @@
 @echo off
 
-:: Tentative d'exécution via WSL
-wsl ./launch.sh
-if %errorlevel% equ 0 goto end
+echo Eteint le conteneur
+docker compose down
 
-:: Si WSL échoue, tentative via bash (Git Bash)
-bash launch.sh
-if %errorlevel% equ 0 goto end
+echo Build et démarre le conteneur
+docker compose up -d --build
 
-echo Une erreur est survenue lors du lancement de launch.sh.
-echo Assurez-vous que WSL ou Git Bash est installe et dans le PATH.
+echo Lancement du terminal linux du conteneur
+docker exec -it opencode_dev bash
 
-:end
 pause

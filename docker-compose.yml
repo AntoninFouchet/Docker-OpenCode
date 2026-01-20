@@ -1,20 +1,36 @@
+networks:
+  public_net:
+    internal: false
+  internal_net:
+    internal: true
+
 services:
   opencode:
+    image: opencode-docker:v1 #image du conteneur
     build:
       context: .
       dockerfile: Dockerfile
     container_name: opencode_dev
+
+    networks:
+      - ${DOCKER_NETWORK:-internal_net}
+
     volumes:
-      - .:/app
+      - ${LOCAL_PROJECTS_PATH}:/app/workspace
     ports:
       - "3000:3000"
-    working_dir: /app
+    working_dir: /app/workspace
     environment:
+      # Adresse pour la communication interne
       - OLLAMA_BASE_URL=http://ollama:11434
-      - | # force l'utilisation de Ollama
+      # Dossier de travail est workspace par défaut
+      - WORKSPACE_DIR=/app/workspace
+
+      # Forcer l'utilisation de Ollama, config Json
+      - |
         OPENCODE_CONFIG_CONTENT={
           "enabled_providers": ["ollama"],
-          "model": "ollama/llama3",
+          "model": "ollama/qwen2.5-coder:7b",
           "provider": {
             "ollama": {
               "npm": "@ai-sdk/openai-compatible",
@@ -23,22 +39,23 @@ services:
                 "baseURL": "http://ollama:11434/v1"
               },
               "models": {
-                "llama3": {
-                  "name": "Llama 3"
+                "qwen2.5-coder:7b": {
+                  "name": "Qwen 2.5 Coder (7B)"
                 }
               }
             }
           }
-        }
+        }        
 
   ollama:
     image: ollama/ollama:latest
     container_name: ollama_dev
     ports:
-      - "11434:11434"
+      - "11435:11434"
     volumes:
       - ollama_data:/root/.ollama
+    networks:
+      - ${DOCKER_NETWORK:-internal_net}
 
 volumes:
   ollama_data:
-
