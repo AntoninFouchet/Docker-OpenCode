@@ -1,11 +1,27 @@
 networks:
-  public_net:
-    internal: false
-  internal_net:
-    internal: true
+  # Réseau Public, Seul le Proxy y a accès
+  public_net: # Exterieur
+    driver: bridge # Va faire la passerelle
+
+  # Réseau Privé, OpenCode et Ollama sont enfermés ici
+  private_net:
+    internal: true # reste en interne
 
 services:
-  opencode:
+
+  proxy: # conteneur proxy
+    image: ubuntu/squid:latest
+    container_name: proxy_guard
+    volumes: # Association du Proxy aux paramètres définit sur le windows
+      - ./squid.conf:/etc/squid/squid.conf
+    ports:
+      - "3128:3128"
+    networks:
+      - public_net       # Côté Internet
+      - private_net  # Côté Interne
+
+
+  opencode: # conteneur OpenCode
     image: opencode-docker:v1 #image du conteneur
     build:
       context: .
@@ -13,14 +29,19 @@ services:
     container_name: opencode_dev
 
     networks:
-      - ${DOCKER_NETWORK:-internal_net}
-
+      - private_net
     volumes:
       - ${LOCAL_PROJECTS_PATH}:/app/workspace
     ports:
       - "3000:3000"
     working_dir: /app
     environment:
+      # Proxy
+      # Le trafic web passe par proxy
+      - HTTP_PROXY=http://proxy:3128
+      - HTTPS_PROXY=http://proxy:3128
+      # Empeche l'agent de passer par le proxy pour parler à 127.0.0.1 (lui même), ollama et opencode_dev
+      - NO_PROXY=localhost,127.0.0.1,ollama,opencode_dev
       # Dossier de travail est workspace par défaut
       - WORKSPACE_DIR=/app/workspace
       # Adresse pour la communication interne
@@ -47,15 +68,18 @@ services:
           }
         }        
 
-  ollama:
+  ollama: # conteneur Ollama
     image: ollama/ollama:latest
     container_name: ollama_dev
+    networks:
+      - private_net
+    environment:
+      - HTTP_PROXY=http://proxy:3128
+      - HTTPS_PROXY=http://proxy:3128
+      - NO_PROXY=localhost,127.0.0.1,opencode_dev
     ports:
       - "11435:11434"
     volumes:
       - ollama_data:/root/.ollama
-    networks:
-      - ${DOCKER_NETWORK:-internal_net}
-
 volumes:
   ollama_data:
