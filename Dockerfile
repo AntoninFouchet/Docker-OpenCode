@@ -1,4 +1,3 @@
-# Utiliser l'image officielle de Bun
 FROM debian:bookworm-slim
 
 # Définir le répertoire de travail
