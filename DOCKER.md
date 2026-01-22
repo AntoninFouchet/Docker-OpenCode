@@ -8,7 +8,7 @@ docker compose up -d --build
 ## 2. Launch the Linux terminal from the container
 To launch the Linux terminal from the container, type the following command:
 ```bash
-docker exec -it opencode_dev bash
+docker exec -it opencode bash
 ```
 
 ## 3. Install Bun for dependencies
