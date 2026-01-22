@@ -31,10 +31,10 @@ services:
     networks:
       - private_net
     volumes:
-      - ${LOCAL_PROJECTS_PATH}:/app/workspace
+      - ${LOCAL_PROJECTS_PATH}:/agent/shared
     ports:
       - "3000:3000"
-    working_dir: /app
+    working_dir: /agent
     environment:
       # Proxy
       # Le trafic web passe par proxy
@@ -42,8 +42,8 @@ services:
       - HTTPS_PROXY=http://proxy:3128
       # Empeche l'agent de passer par le proxy pour parler à 127.0.0.1 (lui même), ollama et opencode_dev
       - NO_PROXY=localhost,127.0.0.1,ollama,opencode_dev
-      # Dossier de travail est workspace par défaut
-      - WORKSPACE_DIR=/app/workspace
+      # Dossier de travail est shared par défaut
+      - WORKSPACE_DIR=/agent/shared
       # Adresse pour la communication interne
       - OLLAMA_BASE_URL=http://ollama:11434
 

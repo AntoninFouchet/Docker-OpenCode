@@ -49,13 +49,19 @@ To retrieve the OpenCode project Docker image, type the following command:
 docker load -i opencode.tar
 ```
 
-## 2. Launch the Linux terminal from the container
-To launch the Linux terminal from the container, type the following command:
+## 2. Launch the container
+To launch the container, type the following command:
 ```bash
-docker exec -it opencode_dev bash
+docker run <name_image>
 ```
 
-## 3. Launch the development server
+## 3. Launch the Linux terminal from the container
+To launch the Linux terminal from the container, type the following command:
+```bash
+docker exec -it <contnair_id> bash
+```
+
+## 4. Launch the development server
 Once inside the container and installation is complete, launch the project:
 ```bash
 bun dev
