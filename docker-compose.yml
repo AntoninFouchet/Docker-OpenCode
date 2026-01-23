@@ -40,10 +40,8 @@ services:
       # Le trafic web passe par proxy
       - HTTP_PROXY=http://proxy:3128
       - HTTPS_PROXY=http://proxy:3128
-      # Empeche l'agent de passer par le proxy pour parler à 127.0.0.1 (lui même), ollama et opencode_dev
-      - NO_PROXY=localhost,127.0.0.1,ollama,opencode_dev
-      # Dossier de travail est shared par défaut
-      - WORKSPACE_DIR=/agent/shared
+      # Empeche l'agent de passer par le proxy pour parler à 127.0.0.1 (lui même), ollama et opencode
+      - NO_PROXY=localhost,127.0.0.1,ollama,opencode
       # Adresse pour la communication interne
       - OLLAMA_BASE_URL=http://ollama:11434
 
