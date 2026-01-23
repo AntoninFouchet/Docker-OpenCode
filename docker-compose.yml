@@ -3,7 +3,7 @@ networks:
   public_net: # Exterieur
     driver: bridge # Va faire la passerelle
 
-  # Réseau Privé, OpenCode et Ollama sont enfermés ici
+  # Réseau Privé, OpenCode est enfermé ici
   private_net:
     internal: true # reste en interne
 
@@ -22,16 +22,15 @@ services:
 
 
   opencode: # conteneur OpenCode
-    image: opencode-docker:v1 #image du conteneur
+    image:  #image du conteneur
     build:
       context: .
       dockerfile: Dockerfile
     container_name: opencode
-
     networks:
       - private_net
     volumes:
-      - ${LOCAL_PROJECTS_PATH}:/agent/shared
+      - C:/_ddm/opencode:/agent/shared
     ports:
       - "3000:3000"
     working_dir: /agent
@@ -40,46 +39,5 @@ services:
       # Le trafic web passe par proxy
       - HTTP_PROXY=http://proxy:3128
       - HTTPS_PROXY=http://proxy:3128
-      # Empeche l'agent de passer par le proxy pour parler à 127.0.0.1 (lui même), ollama et opencode_dev
-      - NO_PROXY=localhost,127.0.0.1,ollama,opencode_dev
-      # Dossier de travail est shared par défaut
-      - WORKSPACE_DIR=/agent/shared
-      # Adresse pour la communication interne
-      - OLLAMA_BASE_URL=http://ollama:11434
-
-      # Forcer l'utilisation de Ollama, config Json
-      - |
-        OPENCODE_CONFIG_CONTENT={
-          "enabled_providers": ["ollama"],
-          "model": "ollama/qwen2.5-coder:7b",
-          "provider": {
-            "ollama": {
-              "npm": "@ai-sdk/openai-compatible",
-              "name": "Ollama",
-              "options": {
-                "baseURL": "http://ollama:11434/v1"
-              },
-              "models": {
-                "qwen2.5-coder:7b": {
-                  "name": "Qwen 2.5 Coder (7B)"
-                }
-              }
-            }
-          }
-        }        
-
-  ollama: # conteneur Ollama
-    image: ollama/ollama:latest
-    container_name: ollama
-    networks:
-      - private_net
-    environment:
-      - HTTP_PROXY=http://proxy:3128
-      - HTTPS_PROXY=http://proxy:3128
-      - NO_PROXY=localhost,127.0.0.1,opencode_dev
-    ports:
-      - "11435:11434"
-    volumes:
-      - ollama_data:/root/.ollama
-volumes:
-  ollama_data:
+      # Empeche l'agent de passer par le proxy pour parler à 127.0.0.1 (lui même)et opencode_dev
+      - NO_PROXY=localhost,127.0.0.1,opencode
