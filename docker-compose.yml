@@ -27,23 +27,23 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: opencode
-
+    depends_on:
+      - proxy
+      - ollama
     networks:
       - private_net
     volumes:
-      - ${LOCAL_PROJECTS_PATH}:/agent/shared
+      - C:/_ddm/agents/shared:/agents/shared
     ports:
       - "3000:3000"
-    working_dir: /agent
+    working_dir: /agents
     environment:
       # Proxy
       # Le trafic web passe par proxy
       - HTTP_PROXY=http://proxy:3128
       - HTTPS_PROXY=http://proxy:3128
-      # Empeche l'agent de passer par le proxy pour parler à 127.0.0.1 (lui même), ollama et opencode_dev
-      - NO_PROXY=localhost,127.0.0.1,ollama,opencode_dev
-      # Dossier de travail est shared par défaut
-      - WORKSPACE_DIR=/agent/shared
+      # Empeche l'agent de passer par le proxy pour parler à 127.0.0.1 (lui même), ollama et opencode
+      - NO_PROXY=localhost,127.0.0.1,ollama,opencode
       # Adresse pour la communication interne
       - OLLAMA_BASE_URL=http://ollama:11434
 
@@ -76,7 +76,7 @@ services:
     environment:
       - HTTP_PROXY=http://proxy:3128
       - HTTPS_PROXY=http://proxy:3128
-      - NO_PROXY=localhost,127.0.0.1,opencode_dev
+      - NO_PROXY=localhost,127.0.0.1,opencode
     ports:
       - "11435:11434"
     volumes:

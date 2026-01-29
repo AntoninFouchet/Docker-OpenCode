@@ -1,7 +1,7 @@
-FROM debian:bookworm-slim
+FROM node:22-bookworm-slim
 
 # Définir le répertoire de travail
-WORKDIR /agent
+WORKDIR /agents
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -13,10 +13,10 @@ RUN apt-get update && \
 COPY --from=oven/bun:latest /usr/local/bin/bun /usr/local/bin/bun
 
 # Créé le dossier d'emplacement de travail (volume)
-RUN mkdir -p /agent/shared
+RUN mkdir -p /agents/shared
 
 # Copier les fichiers du projet dans le conteneur
-WORKDIR /agent/opencode
+WORKDIR /agents/opencode
 COPY . .
 
 RUN bun install
