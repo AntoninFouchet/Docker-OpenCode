@@ -22,7 +22,7 @@ services:
 
 
   opencode: # conteneur OpenCode
-    image: opencode-docker:v1 #image du conteneur
+    image: opencode-podman:v1 #image du conteneur
     build:
       context: .
       dockerfile: Dockerfile
@@ -33,7 +33,7 @@ services:
     networks:
       - private_net
     volumes:
-      - C:/_ddm/agents/shared:/agents/shared
+      - /mnt/c/_ddm/agents/shared:/agents/shared
     ports:
       - "3000:3000"
     working_dir: /agents
