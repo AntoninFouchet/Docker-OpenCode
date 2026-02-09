@@ -1,12 +1,15 @@
 @echo off
 
+podman machine start
+
 echo Eteint le conteneur
-docker compose down
+podman compose down
 
 echo Build et démarre le conteneur
-docker compose up -d --build
+podman compose up -d --build
 
 echo Lancement du terminal linux du conteneur
-docker exec -it opencode bash
+podman exec -it opencode bash
 
 pause
+
